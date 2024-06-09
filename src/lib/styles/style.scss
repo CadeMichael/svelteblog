@@ -1,0 +1,292 @@
+// colors
+$fg: #ebdbb2;
+$fg0: #fbf1c7;
+$fg2: #d5c4a1;
+$bg: #282828;
+$bg1: #3c3836;
+$bg3: #665c45;
+$gray: #a89984;
+$light-blue: #83a598;
+$light-purple: #d3869b;
+$light-aqua: #8ec07c;
+$light-green: #b8bb26;
+$blue: #458588;
+$green: #98971a;
+$purple: #b16286;
+$line-numbers: #504945;
+
+.blog-post {
+  // general styling
+  max-width: fit-content;
+  margin-top: 25px;
+  margin-left: auto;
+  min-width: 85%;
+  margin-right: auto;
+  background-color: $fg;
+  padding: 40px;
+  border-radius: 10px;
+  margin-bottom: 25px;
+
+  // on large screens keep a bit of space around post
+  @media (min-width: 1000px) {
+    max-width: 85%;
+  }
+
+  // images
+  img {
+      width: 60%;
+      margin-top: 10px;
+      margin-right: auto;
+      margin-left: auto;
+      box-shadow: 7px 7px #a89984;
+      border-radius: 10px;
+      @media (max-width: 1000px) {
+          width: 95%;
+      }
+  }
+
+  // code blocks
+  pre {
+    padding: 10px;
+    overflow: auto;      /* Enables scrolling when content overflows the element's box */
+    box-sizing: border-box; /* Includes padding and border in the element's total width and height */
+    border-radius: 10px;
+    border: 3px solid $light-aqua;
+    box-shadow: 7px 7px;
+  }
+
+  // number lines in code blocks
+  code {
+    counter-reset: line-numbering; /* Create a counter named 'line-numbering' and reset it for each 'code' block */
+  }
+
+  .line::before {
+    counter-increment: line-numbering; /* Increment the counter for each '.line' */
+    content: counter(line-numbering) " "; /* Display the counter before the content of '.line' */
+    width: 30px; /* Space for the line numbers */
+    display: inline-block; /* Make sure this behaves as an inline element */
+    text-align: right; /* Align numbers to the right */
+    padding-right: 36px; /* Space between the line number and the code */
+    color: $line-numbers; /* Styling for line numbers */
+  }
+
+  // headings
+  :where(h1, h2, h3, h4, h5, h6) {
+    color: $blue;
+    .icon-link {
+      position: absolute;
+
+      &::before {
+        content: '#';
+        position: relative;
+        left: -1.25ch;
+        top: 0;
+        line-height: 1.25;
+        opacity: 0;
+      }
+    }
+
+    &:hover .icon-link::before {
+      opacity: 1;
+      color: $purple;
+    }
+  }
+
+  // table of contents
+  .toc {
+    padding: 5px;
+    max-width: fit-content;
+    margin-right: auto;
+  }
+  .toc-level {
+    color: $bg1;
+  }
+  .toc-link {
+    color: $purple;
+  }
+
+  // block quotes
+  blockquote {
+    color: $bg3;
+    background-color: $fg0;
+    padding: 1em;
+    margin-right: auto;
+    margin-left: 2em;
+    border-left: 3px solid darken($bg, 20%);
+    font-style: italic;
+    color: darken($bg, 50%);
+    max-width: 66%;
+    box-sizing: border-box;
+    // box-shadow: 5px 5px;
+
+    @media (max-width: 600px) {
+      max-width: 100%;
+      margin: 1em 0.5em;
+    }
+  }
+}
+
+.about-page {
+  max-width: 100%;
+  margin-bottom: 25px;
+  .heading {
+    max-width: fit-content;
+    margin-top: 25px;
+    margin-bottom: 15px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .work-section {
+    max-width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .card {
+    border-radius: 0px;
+    background-color: $fg2;
+    box-shadow: 2px 2px;
+  }
+  .card:hover {
+    box-shadow: 5px 5px;
+  }
+  .card-title {
+    // color: $purple;
+  }
+  .card-subtitle {
+    color: lighten($bg, 20%);
+  }
+  .card-text {
+    color: $bg;
+  }
+  .badge {
+    margin-right: 2px;
+  }
+}
+
+.home-page {
+  padding-top: 35px;
+  max-width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: 2em;
+  .col-6 {
+    background-color: $fg2;
+  }
+  h1, h2 {
+    color: $blue;
+  }
+  a {
+    color: $purple;
+  }
+
+  .description {
+    width: 100%;
+    padding: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .image-container {
+    width: 100%;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .col-lg-6 {
+    padding-top: 3em;
+    box-shadow: 5px 5px;
+    background-color: $fg2;
+  }
+
+  .image-container img {
+    width: 76%;
+    height: auto;
+    display: block;
+    border-radius: 10px;
+    margin-bottom: 10px;
+  }
+
+  @media (max-width: 1000px) {
+    .col-lg-6 {
+      box-shadow: 0px 0px;
+      background-color: $fg0;
+    }
+    .image-container img {
+      width: 90%;
+      height: auto;
+    }
+  }
+}
+
+.blog-page {
+  margin-top: 25px;
+
+  h2 a {
+    color: $green;
+  }
+
+  .blog-search {
+    padding: 10px;
+    margin-left: auto;
+    margin-right: 1.75em;
+    margin-bottom: 10px;
+    box-shadow: 5px 5px;
+    background-color: $fg;
+    color: $bg3;
+  }
+  @media (max-width: 1000px) {
+    .blog-search {
+      width: 88%;
+      margin-left: auto;
+      margin-right: auto;
+      margin-bottom: 25px;
+      height: auto;
+    }
+  }
+  .form-control {
+    background-color: $fg0;
+    color: $bg;
+  }
+}
+
+// bootstrap customization
+.accordion-button:not(.collapsed) {
+  background-color: $blue; /* Blue background */
+  color: $fg0; /* White text */
+}
+
+/* Accordion header when expanded */
+.accordion-button {
+  background-color: $light-blue; /* Darker blue background */
+  color: black;
+}
+
+/* Accordion body */
+.accordion-body {
+  background-color: $fg2; /* Light blue background */
+  color: $bg; /* Dark grey text */
+}
+
+#workAccordion {
+  margin-top: 25px;
+  width: 75%;
+  @media (max-width: 1100px) {
+    width: 95%;
+  }
+}
+
+footer {
+  background-color: $bg1;
+  color: $fg2;
+  .copyright {
+    background-color: $bg;
+  }
+}
+
+.icon-svelte {
+    height: 1em;   /* Match the height to the line-height of surrounding text */
+    width: auto;   /* Maintain the aspect ratio */
+    vertical-align: middle; /* Align it with inline elements */
+}

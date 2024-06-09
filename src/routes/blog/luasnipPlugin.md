@@ -1,0 +1,281 @@
+---
+title: Setting up Lua Snip
+date: "05-11-2024"
+---
+
+- lua snip is one of the best plugins for snippets in neovim as it is 
+    - written in lua
+    - is compatible with nvim-cmp
+    - allows for complex snippet logic
+
+# Installing the plugin
+
+My package manager of choice is **[lazy](https://github.com/folke/lazy.nvim)**. Mainly due to its ease of installation and the ability to fragment your package configs.
+
+- I have files for each type of plugin, returning a table with their configurations.
+    - I prefer having my configurations / keybindings directly under the package installation.
+    - this way when I need to change something I know exactly where to go.
+
+```lua
+return {
+  {
+    "L3MON4D3/LuaSnip",
+    dependencies = {
+      'saadparwaiz1/cmp_luasnip'
+    },
+    -- Configuration and Keybindings
+    config = function()
+      local ls = require('luasnip')
+      -- expand
+      vim.keymap.set({ "i" }, "<C-K>", function() ls.expand() end, { silent = true })
+      -- moving inside snippets
+      vim.keymap.set({ "i", "s" }, "<C-L>", function() ls.jump(1) end, { silent = true })
+      vim.keymap.set({ "i", "s" }, "<C-J>", function() ls.jump(-1) end, { silent = true })
+      -- go through list of possible snippet options
+      vim.keymap.set({ "i", "s" }, "<C-E>", function()
+        if ls.choice_active() then
+          ls.change_choice(1)
+        end
+      end, { silent = true })
+    end
+}
+```
+
+- we add **cmp_luasnip** for nvim-cmp to have access to our snippets during completion
+
+## Configuring with nvim-cmp
+
+We need to set the snippet framework among other cmp specific settings, for me this is where cmp is installed.
+
+- this allows for our completion binding in cmp to expand snippets (so not just 'C-k' but whatever cmp uses aswell)
+
+```lua
+-- setting up and configuring cmp
+if cmp then
+  cmp.setup({
+    view = {
+      docs = { auto_open = false }
+    },
+    snippet = {
+      expand = function(args)
+        require 'luasnip'.lsp_expand(args.body) -- LuaSnip
+      end,
+    },
+    completion = {
+      completeopt = 'menu,menuone,noinsert',
+      max_item_count = 10
+    },
+    window = {
+      completion = cmp.config.window.bordered(),
+      documentation = cmp.config.window.bordered(),
+    },
+    mapping = cmp.mapping.preset.insert({
+      ['<C-b>'] = cmp.mapping.scroll_docs(-4),
+      ['<C-f>'] = cmp.mapping.scroll_docs(4),
+      ['<C-e>'] = cmp.mapping.abort(),
+      ['<tab>'] = cmp.mapping.confirm({ select = true }),
+    }),
+    sources = cmp.config.sources({
+      { name = 'nvim_lsp' },
+      { name = 'luasnip' },  -- LuaSnip
+      { name = 'path' },
+    }, {
+      { name = 'buffer' },
+    })
+  })
+end
+```
+
+# Creating Custom Snippets
+
+I put my snippets in `ftplugin/<lang>.lua`, I feel that it keeps my *.config/nvim/* a bit cleaner and reduces configuration overhead.
+- the inital requires pull in the functions from LuaSnip that will be needed for *all* types of snippets for simple snippets you only need
+    - `ls`  -> LuaSnip
+    - `s`   -> Add snippets for a language
+    - `i`   -> text insertion
+    - `fmt` -> a cleaner declaration for snippets using lua *block string* `[[]]`
+
+## Basic plugins
+
+```lua
+local ls = require("luasnip")
+local s = ls.snippet
+local i = ls.insert_node
+local fmt = require("luasnip.extras.fmt").fmt
+
+ls.add_snippets("python", {
+  s("lc", fmt([[
+{} = [{} for {} in {}]
+  ]], {
+    i(1, "var"),
+    i(2, "element"),
+    i(3, "element"),
+    i(0, "list"),
+  })),
+})
+```
+
+## Custom functions for inserting text
+
+for 'dynamic' snippets that use lua functions to add extra text to snippets we will need the following additional modules from LuaSnip
+- `t` -> adding text
+- `d` -> dynamic function that takes
+    - a position to insert text
+    - a function to generate text
+    - positions to gather data to pass into the function
+- `snippet_node` -> the return type for the function 'd' used for creating dynamic snippets
+
+in this example our snippet will look at the parameters supplied to the function and its return type, using both to generate a docstring.
+
+```lua
+local ls = require("luasnip")
+local s = ls.snippet
+local i = ls.insert_node
+local t = ls.text_node
+local d = ls.dynamic_node
+local fmt = require("luasnip.extras.fmt").fmt
+local snippet_node = ls.snippet_node
+
+-- args would be the nodes {3, 4}
+local function nat_spec_comments(args)
+  -- split params by ','
+  local params = vim.split(args[1][1], ",")
+  -- the return type is the last arg
+  local visibility = args[2][1]
+  local nodes = {}
+  -- iterate through params
+  for _, param in ipairs(params) do
+    param = vim.trim(param)
+    if param ~= "" then
+      -- for each param create a new text node
+      local parts = vim.split(vim.trim(param), "%s+")
+      local var_name = parts[#parts]
+      table.insert(nodes, t({ "/// @param " .. var_name, "" })) -- ,"" creates a newline
+    end
+  end
+  -- check for return
+  if string.find(visibility, "returns") then
+    table.insert(nodes, t({ "/// @return", "" }))
+  end
+  -- return autogenerated nodes
+  return snippet_node(nil, nodes)
+end
+
+ls.add_snippets("solidity", {
+  s("function", fmt([[
+{docs}function {}({}) {} {{
+    {}
+}}
+]], {
+    docs = d(1, nat_spec_comments, { 3, 4 }),
+    i(2, "functionName"),
+    i(3),
+    i(4, "visibility"),
+    i(0, "body")
+  })),
+})
+
+--[
+-- 'function test(bytes32 a, bytes memory b) returns (bool) {}'
+-- becomes...
+-- /// @param a
+-- /// @param b
+-- /// @return
+-- function test(bytes32 a, bytes memory b) returns (bool) {}
+--]
+```
+
+## Example of plugins that need to consider indentation
+
+One consideration when using whitespace based syntax languages like Python, is proper indentation. If you were to use the same approach as above the inserted docstrings would be out of position. To remidy this we use 'isn' or *indent snippet nodes*. This process is very similar but has slight changes that can be frustrating at first.
+- These snippets showcase the power of using lua to define snippets. We can use advanced logic to parse arguments with a real language (code wars lua challenges make you better at Neovim!!!)
+- we will take in the function parameters then insert the boilerplate for Google Style Documentation.
+- one thing we have to avoid is splitting on all ',' as some type hints like `tuple[str, int]` contain commas that would break the naive approach.
+    - to prevent this we write another function to handle parsing the parameters
+
+```lua
+-- additional imports
+local isn = ls.indent_snippet_node
+local f = ls.function_node
+local k = require('luasnip.nodes.key_indexer').new_key
+
+-- make sure type hits like 'tuple[int, str]' get properly parsed
+local function parse_params(str)
+  local params = {}
+  -- 
+  local balance = 0
+  local param = {}
+  -- Iterate over each character looking for []
+  for j = 1, #str do
+    local char = str:sub(j, j)
+    if char == '[' then
+      balance = balance + 1
+    elseif char == ']' then
+      balance = balance - 1
+    end
+    -- If a comma not within brackets is found, split here.
+    if char == ',' and balance == 0 then
+      table.insert(params, table.concat(param))
+      param = {}
+    else
+      table.insert(param, char)
+    end
+  end
+  -- Insert the last parameter.
+  table.insert(params, table.concat(param))
+  return params
+end
+
+local function doc_string(args)
+  local raw_params = args[1][1] -- get the arguments from 'p-key'
+  local params = parse_params(raw_params) -- process them
+  local nodes = {}
+  -- iterate through parsed params
+  for _, param in ipairs(params) do
+    param = vim.trim(param)
+    if param ~= "" then
+      -- break apart param name and type hint
+      local parts = vim.split(vim.trim(param), ":")
+      local var_name = vim.trim(parts[1])
+      -- check for type hints
+      if #parts > 1 then
+        local type_name = vim.trim(parts[2])
+        table.insert(nodes, (var_name .. ' (' .. type_name .. '):'))
+      else
+        table.insert(nodes, (var_name .. ' '))
+      end
+    end
+  end
+  return nodes
+end
+
+ls.add_snippets("python", {
+  s("dd", fmt([[
+def {}({}):
+    """{}
+
+    Args:
+        {}
+    """
+
+    {}
+]], {
+    i(1, "name"),
+    i(2, "params", { key = "p-key" }), -- give {2} a string key
+    i(3, "desc"),
+    isn(nil, { f(doc_string, k("p-key")) }, "$PARENT_INDENT\t\t"),
+    i(0, "body")
+  })),
+})
+```
+
+<script>
+  // You can dynamically change the GIF if needed
+  let gifUrl = '/luasnip.gif';
+</script>
+
+# Demo
+
+example of using the pythong docstring snippet implemented above. 
+
+<img class="row" src={gifUrl} alt="Description of GIF content" />

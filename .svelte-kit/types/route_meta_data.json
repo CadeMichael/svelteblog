@@ -1,0 +1,20 @@
+{
+	"/": [
+		"src/routes/+layout.js",
+		"src/routes/+layout.js"
+	],
+	"/about": [
+		"src/routes/+layout.js"
+	],
+	"/api/posts": [
+		"src/routes/api/posts/+server.js"
+	],
+	"/blog": [
+		"src/routes/blog/+page.js",
+		"src/routes/+layout.js"
+	],
+	"/blog/[slug]": [
+		"src/routes/blog/[slug]/+page.js",
+		"src/routes/+layout.js"
+	]
+}
