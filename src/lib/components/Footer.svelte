@@ -8,11 +8,11 @@
         role="button"><i class="fab fa-youtube"></i></a
       >
       <!-- Instagram -->
-      <a
-        class="btn btn-outline-light btn-floating m-1"
-        href="https://www.instagram.com/bigdogbjj/"
-        role="button"><i class="fab fa-instagram"></i></a
-      >
+      <!-- <a -->
+        <!-- class="btn btn-outline-light btn-floating m-1" -->
+        <!-- href="https://www.instagram.com/bigdogbjj/" -->
+        <!-- role="button"><i class="fab fa-instagram"></i></a -->
+      <!-- > -->
       <!-- Linkedin -->
       <a
         class="btn btn-outline-light btn-floating m-1"
