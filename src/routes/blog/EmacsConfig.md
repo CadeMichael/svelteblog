@@ -32,7 +32,14 @@ I have a few other packages installed but the main goal of all of them is to sat
 
 ### MacOs
 
+```sh
+$ brew tap d12frosted/emacs-plus
+$ brew install emacs-plus --with-native-comp
+```
+
 ### Linux
+
+- using Nix or building from source.
 
 ## File layout
 

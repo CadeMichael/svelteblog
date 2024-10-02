@@ -11,7 +11,8 @@
 
 <div class="about-page">
   <div class="container">
-    <h2 class="heading">Work Experience</h2>
+    <h2 class="heading">Work Experience & <a href="/Resume.pdf" target="_blank">Resume</a>
+    </h2>
     <div class="row">
       <WorkExperience
         title={"Defi Contractor"}
