@@ -1,3 +1,5 @@
+@use "sass:color";
+
 // colors
 $fg: #ebdbb2;
 $fg0: #fbf1c7;
@@ -112,9 +114,9 @@ $line-numbers: #504945;
     padding: 1em;
     margin-right: auto;
     margin-left: 2em;
-    border-left: 3px solid darken($bg, 20%);
+    border-left: 3px solid color.adjust($bg, $lightness: -20%, $space: hsl);
     font-style: italic;
-    color: darken($bg, 50%);
+    color: color.adjust($bg, $lightness: -50%, $space: hsl);
     max-width: 66%;
     box-sizing: border-box;
     // box-shadow: 5px 5px;
@@ -153,7 +155,7 @@ $line-numbers: #504945;
     // color: $purple;
   }
   .card-subtitle {
-    color: lighten($bg, 20%);
+    color: color.adjust($bg, $lightness: 20%, $space: hsl);
   }
   .card-text {
     color: $bg;
