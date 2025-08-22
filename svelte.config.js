@@ -30,9 +30,9 @@ const config = {
         highlighter: async (code, lang = 'text') => {
           const highlighter = await getHighlighter({
             themes: [gruvbox],
-            langs: ['zig', 'wasm', 'ocaml', 'lua', 'lean4', 'nix', 'py', 'elisp', 'js', 'rs', 'sh']
+            langs: ['zig', 'go', 'cpp', 'wasm', 'ocaml', 'lua', 'lean4', 'nix', 'py', 'elisp', 'js', 'rs', 'sh']
           })
-          await highlighter.loadLanguage('zig', 'wasm', 'ocaml', 'nix', 'lua', 'lean4', 'py', 'elisp', 'js', 'rs', 'sh')
+          await highlighter.loadLanguage('zig', 'go', 'cpp', 'wasm', 'ocaml', 'nix', 'lua', 'lean4', 'py', 'elisp', 'js', 'rs', 'sh')
           const html = escapeSvelte(highlighter.codeToHtml(code, { lang, theme: 'gruvbox' }))
           return `{@html \`${html}\` }`
         }

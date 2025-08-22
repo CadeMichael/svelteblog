@@ -46,8 +46,8 @@
 <style>
   .navbar {
     background-color: #282828;
-    position: fixed; /* Fix position to the top of the viewport */
-    top: 0; /* Align top edge at the top of the viewport */
+    position: fixed;
+    top: 0;
     z-index: 1000;
     width: 100%;
   }
