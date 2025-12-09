@@ -70,6 +70,8 @@ def main(): Unit \ IO =
 
 Here `Unit \ IO` denotes a function that returns nothing (ie Unit) with the IO Effect. Being a builtin function `println` doesn't Require handling `IO`. But handlers in Flix have some of the most developer friendly syntax (in my opinion). You denote effectful code with `run` and handle them with `with`.
 
+This example is straight from Flix's documentation and demonstrates effects that don't resume. In essence these are Exceptions we see in other languages. In this example think of the `run {} with {}` syntax as `try {} catch {}` in common languages.
+
 ```
 eff DivByZero { // declaring 'DivByZero' effect
     def divByZero(): Void
@@ -92,8 +94,8 @@ def main(): Unit \ IO = // 'main' doesn't have 'DivByZero' effect as it is handl
     }
 ```
 
+To show a basic usage of continuations we can refactor the `divByZero` Effect to return a default value using a **continuation**.
 We can see how Effects allow more modular code as changing `divByZero` or providing different implementation doesn't change where it is called.
-To show a basic usage of continuations we can refactor the `divByZero` Effect to return a default value using a **continuation**
 
 ```
 eff DivByZero {
