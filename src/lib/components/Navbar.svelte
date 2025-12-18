@@ -38,6 +38,11 @@
             href="/blog">Blog</a
           >
         </li>
+        <li class="nav-item">
+          <a
+            class="nav-link {$page.url.pathname.includes('/research') ? 'active' : ''}"
+            href="/research">Research</a>
+        </li>
       </ul>
     </div>
   </div>

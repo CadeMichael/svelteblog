@@ -165,6 +165,77 @@ $line-numbers: #504945;
   }
 }
 
+.research-page {
+  max-width: 100%;
+  margin-bottom: 25px;
+
+  .heading {
+    max-width: fit-content;
+    margin-top: 25px;
+    margin-bottom: 15px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .card {
+    border-radius: 0px;
+    background-color: $fg2;
+    box-shadow: 2px 2px;
+  }
+
+  .card:hover {
+    box-shadow: 5px 5px;
+  }
+
+  .card-title {
+    // color: $purple;
+  }
+
+  .card-text {
+    color: $bg;
+    font-style: italic;
+  }
+  .abstract-toggle {
+    background: transparent;
+    border: none;
+    padding: 0;
+    color: $blue;
+    font-weight: 600;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .abstract-toggle .caret {
+    transition: transform 0.15s ease;
+    display: inline-block;
+    line-height: 1;
+  }
+
+  .abstract-toggle .open {
+    transform: rotate(180deg);
+  }
+
+  .badge {
+    margin-right: 2px;
+  }
+  .topic-list {
+    color: color.adjust($bg, $lightness: 20%, $space: hsl);
+    font-weight: 600;
+    font-size: 0.9rem;
+    text-transform: none;
+    margin-bottom: 0.5rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .card-title {
+    text-decoration: underline;
+  }
+}
+
 .home-page {
   padding-top: 35px;
   max-width: 100%;
