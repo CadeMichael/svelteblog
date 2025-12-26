@@ -2,7 +2,7 @@
   import WorkExperience from "$lib/components/WorkExperience.svelte";
 
   let flix = "During the summer of 2025 I was invited to Aarhus to contribute to the Flix language, created by Professor Magnus Madsen. I mainly worked on expanding the Flix standard library using effect-oriented and functional design patterns. Additoinally I leveraged the new JDK24 bytecode manipulation APIs to prototype a more robust Scala backend for the Flix compiler";
-  let phd = "Beginning my graduate degree in 2024 I started at CU Boulder, studying prommaing languages. My research has an emphasis on Category Theory, Abstract Interpretation, and Functional Programming. I mainly use functional languages such as Scala and Ocaml for implementations. When doing verification work I have used Coq but have a preference for Lean4.";
+  let phd = "Beginning my graduate degree in 2024 I started at CU Boulder, studying programming languages. My research has an emphasis on Category Theory, Abstract Interpretation, and Functional Programming. I mainly use functional languages such as Scala and Ocaml for implementations. When doing verification work I have used Coq but have a preference for Lean4.";
   let vertex =
     "Working with Vertex I was responsible for writing smart contracts in Solidity and Oracles in Rust. My team was rather small and developed several projects from the ground up. We worked as smart contract developers and built production oracles (software for interfacing with contracts) in Rust.";
   let publicis =
